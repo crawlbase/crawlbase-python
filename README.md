@@ -15,10 +15,6 @@ Then import the CrawlingAPI, ScraperAPI, etc as needed.
 from crawlbase import CrawlingAPI, ScraperAPI, LeadsAPI, ScreenshotsAPI, StorageAPI
 ```
 
-### Upgrading to version 3
-
-Version 3 deprecates the usage of CrawlbaseAPI in favour of CrawlingAPI (although is still usable). Please test the upgrade before deploying to production.
-
 ## Crawling API
 
 First initialize the CrawlingAPI class.

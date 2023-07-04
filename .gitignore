@@ -1,0 +1,4 @@
+*.pyc
+build
+crawlbase.egg-info
+dist
