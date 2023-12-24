@@ -276,4 +276,4 @@ Timeout is in seconds.
 
 ---
 
-Copyright 2023 Crawlbase
+Copyright 2024 Crawlbase
