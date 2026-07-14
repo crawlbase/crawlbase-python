@@ -12,7 +12,7 @@ readme = open('README.md').read()
 setup(
     name = 'crawlbase',
     license = 'Apache-2.0',
-    version = '1.0.0',
+    version = '1.1.0',
     description = 'A Python class that acts as wrapper for Crawlbase scraping and crawling API',
     long_description = readme,
     long_description_content_type = 'text/markdown',

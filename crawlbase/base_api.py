@@ -89,11 +89,25 @@ class BaseAPI(object):
 
         return body_gzip.read()
 
+    def _resolve_status(self, source):
+        """Prefer cb_status, fall back to deprecated pc_status."""
+        if 'cb_status' in source:
+            return source.get('cb_status')
+        if 'pc_status' in source:
+            return source.get('pc_status')
+        return None
+
+    def _set_status_headers(self, resolved):
+        # cb_status is preferred; pc_status is deprecated but kept for compatibility.
+        status = str(resolved)
+        self.response['headers']['cb_status'] = status
+        self.response['headers']['pc_status'] = status
+
     def parseJsonResponse(self):
         parsed_json = json.loads(self.response['body'])
         if 'original_status' in parsed_json:
             self.response['headers']['original_status'] = str(parsed_json['original_status'])
-            self.response['headers']['pc_status'] = str(parsed_json['pc_status'])
+            self._set_status_headers(self._resolve_status(parsed_json))
             self.response['headers']['url'] = str(parsed_json['url'])
 
         if 'body' in parsed_json:
@@ -111,5 +125,5 @@ class BaseAPI(object):
     def parseRegularResponse(self, handler):
         headers = handler.headers
         self.response['headers']['original_status'] = str(headers.get('original_status'))
-        self.response['headers']['pc_status'] = str(headers.get('pc_status'))
+        self._set_status_headers(self._resolve_status(headers))
         self.response['headers']['url'] = str(headers.get('url'))
