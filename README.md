@@ -101,12 +101,26 @@ if response['status_code'] == 200:
 
 ## Original status
 
-You can always get the original status and crawlbase status from the response. Read the [Crawlbase documentation](https://crawlbase.com/docs) to learn more about those status.
+You can always get the original status and Crawlbase status from the response. Read the [Crawlbase documentation](https://crawlbase.com/docs) to learn more about those status.
+
+`cb_status` is the preferred Crawlbase status field. The library reads `cb_status` from the API when present, and falls back to `pc_status` otherwise. Both keys are set on `response['headers']` to the resolved value.
 
 ```python
 response = api.get('https://craiglist.com')
 print(response['headers']['original_status'])
+print(response['headers']['cb_status'])
+```
+
+### Migration from `pc_status`
+
+`pc_status` is deprecated but still supported temporarily for backward compatibility. Prefer `cb_status` in new code:
+
+```python
+# Deprecated (still works temporarily)
 print(response['headers']['pc_status'])
+
+# Preferred
+print(response['headers']['cb_status'])
 ```
 
 If you have questions or need help using the library, please open an issue or [contact us](https://crawlbase.com/contact).
@@ -191,7 +205,7 @@ Pass the [url](https://crawlbase.com/docs/storage-api/parameters/#url) that you 
 response = storage_api.get('https://www.apple.com')
 if response['status_code'] == 200:
     print(response['headers']['original_status'])
-    print(response['headers']['pc_status'])
+    print(response['headers']['cb_status'])
     print(response['headers']['url'])
     print(response['headers']['rid'])
     print(response['headers']['stored_at'])
@@ -204,7 +218,7 @@ or you can use the [RID](https://crawlbase.com/docs/storage-api/parameters/#rid)
 response = storage_api.get('RID_REPLACE')
 if response['status_code'] == 200:
     print(response['headers']['original_status'])
-    print(response['headers']['pc_status'])
+    print(response['headers']['cb_status'])
     print(response['headers']['url'])
     print(response['headers']['rid'])
     print(response['headers']['stored_at'])
@@ -233,7 +247,8 @@ response = storage_api.bulk(['RID1', 'RID2', 'RID3', ...])
 if response['status_code'] == 200:
     for item in response['json']:
         print(item['original_status'])
-        print(item['pc_status'])
+        # Bulk items use API payload keys; prefer cb_status, fall back to pc_status
+        print(item.get('cb_status', item.get('pc_status')))
         print(item['url'])
         print(item['rid'])
         print(item['stored_at'])
